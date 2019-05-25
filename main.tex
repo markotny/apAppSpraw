@@ -1,0 +1,74 @@
+\documentclass[polish, 11pt]{article}
+
+\usepackage[a4paper,
+  top=.5cm,
+  bottom=2.5cm,
+  left=2.5cm,
+  right=2.5cm,
+  headheight=86pt, % as per the warning by fancyhdr
+  includehead,includefoot,
+  heightrounded, % to avoid spurious underfull messages
+]{geometry}
+\usepackage{babel}
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{minted} % na razie zostawiłem ale do pseudokodu minted chyba nie ma wsparcia - jest coś jak algorithm2e ale nie przyglądałem sie bardziej albo po prostu listings
+\usemintedstyle{xcode}
+\usepackage{booktabs}
+\usepackage{multirow}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyheadoffset[L]{2cm}
+\lhead{\includegraphics[height=2cm]{figures/PWRlogo.jpg}\\
+    \vspace{3mm}
+    Tytuł projektu: Apapp
+    \vspace{1mm}
+}
+\cfoot{Wrocław, 2019}
+\rfoot{\thepage}
+
+\begin{document}
+{
+    \centering
+    \Huge{PROJEKTOWANIE SYSTEMÓW INTERNETOWYCH I MOBILNYCH}
+\vspace{2cm}
+
+    \huge{WYDZIAŁ ELEKTRONIKI - INFORMATYKA \\ Systemy i Sieci Komputerowe}
+\vspace{2cm}
+
+    \LARGE{\textbf{Tytuł projektu: Apapp}}
+\vspace{3cm}
+
+    \begin{flushright}
+        Zespół projektowy:\\
+        Janusz Długosz, 235746\\
+        Jakub Dorda, 235013\\
+        Marcin Kotas, 235098\\
+        Mateusz Polok, 235???
+        
+    \end{flushright}
+}
+\newpage
+\tableofcontents
+\newpage
+
+\section{Cel i zakres projektu}
+
+\section{Technologie informatyczne wykorzystane w projekcie}
+
+\section{Harmonogram prac projektowych – wykres Gantta}
+
+\section{Architektura aplikacji}
+
+\section{Opis struktury kodowania aplikacji}
+
+\section{Prezentacja aplikacji}
+
+\section{Analiza SWOT powdrożeniowa}
+
+\end{document}
