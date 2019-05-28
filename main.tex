@@ -124,6 +124,19 @@
         Wykorzystany został również Entity Framework Core zapewniający translację danych pomiędzy relacyjną bazą danych, a obiektami w programie (O/R mapping).
         
         Jako system zarządzający bazą danych wybrano PostgreSQL.
+        
+    \subsection{Android}
+    	Aplikacja mobilna pisana jest w języku programowania Kotlin
+    	Komunikację z REST api zapewniają popularne biblioteki Retrofit2 oraz OkHttp3 rozwijane przez firmę Square.
+    	Parsowanie jsonów odbywa się przy pomocy biblioteki Gson.
+    	
+    	Ważnym elementem architektury aplikacji jest programowania reaktywne, w tym celu użyto implementacji Reactive Components znanych jako rodzina bibliotek ReactiveX w wersji RxKotlin. Dodatkowo wykorzystywane też są wtyczki RxAndroid do synchronizacji wątków systemowych oraz retrofit2:adapter-rxjava2 zapewniającej integrację ReactiveX z Retriofit2, umożliwia to obserwowanie zapytań sieciowych. Innym reaktywnym elementem architektury jest LiveData z Android Architecture Components, będący implementacją wzorca obserwator rozszerzonego o świadomość cyklu życia aplikacji Androidowej.
+    	
+    	Czystą architekturę oraz testowalność zapewnia stosowanie Dependency Injection na frameworku Dagger2.
+    	
+    	Komponenty widoku nie będące częścią podstawowych bibliotek pochodzą z rodziny AndroidX będącą następcą Android Support Libs.
+    	
+    	Dodatkowo w aplikacji w konfiguracji Debug wykorzystywany jest framework LeakCanary umożliwiający śledzenie i rozwiązywanie wycieków pamięci JVM. 
 
 \section{Harmonogram prac projektowych – wykres Gantta}
     \begin{figure}[H]
