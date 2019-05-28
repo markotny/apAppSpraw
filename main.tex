@@ -65,6 +65,11 @@
 
 \section{Architektura aplikacji}
 
+\subsection{Android}
+
+Pierwszą warstwą aplikacji mobilnej jest komunikacja sieciowa z REST API. Zapytania sieciowe wykonywane są asynchronicznie z warstwy repozytoriów danych. Repozytoria wykorzystywane są do lokalnego cachowania oraz umożliwiają dostęp do tych samych danych z kilku różnych miejsc kolejnej warstwy abstrakcji. W zależności od potrzeb przy pomocy Dependency Injection repozytorium może być traktowane jako jedno lub wielo-instancyjne. Interfejs publiczny repozytoriów został zbudowany bazując na paradygmacie programowania reaktywnego, implementacja udostępnia obserwowalny, dyskretny potok danych zaimplementowany przy pomocy wzorca projektowego Behaviour Subject (wielu obserwatorów, jeden strumień, dostęp do wartości wyemitowanych w czasie t+1 po subskrypcji obserwatora). Z repozytoriów korzysta bezpośrednio warstwa ViewModelów. ViewModele odpowiadają za definiowanie zachowania widoków aplikacji oraz zapewniają dostęp do danych otrzymywanych z repozytoriów.
+ViewModele komunikują się z warstwą widoku (Fragmenty) przy pomocy LiveData będącego częścią biblioteki Android Architecture Components. LiveData jest implementacją wzorca Obserwator z dodatkową świadomością cyklu życia Fragmentu lub innego komponentu widoku do którego przypisany jest obserwator zmiennej LiveData. W uproszczeniu polega to na automatycznej subskrypcji oraz jej usunięciu w zależności czy dany widok aplikacji jest obecnie widoczny dla użytkownika. Umożliwia to dość znaczącą optymalizację, szczególnie w związku z tym, że z niższych warstw nowe wartości otrzymywane są asynchronicznie. Opcjonalną warstwą między ViewModelem a widokiem jest warstwa Data Bindingu, umożliwiająca obsługę modelu danych od razu w kodzie xml. Rozwiązanie to stosowane jest głównie w niezbyt skomplikowanych widokach nie wymagających interaktywności np. listach.     
+
 \section{Opis struktury kodowania aplikacji}
 
 \section{Prezentacja aplikacji}
