@@ -34,7 +34,7 @@
 \fancyheadoffset[L]{2cm}
 \lhead{\includegraphics[height=2cm]{figures/PWRlogo.jpg}\\
     \vspace{3mm}
-    Tytuł projektu: Apapp
+    Tytuł projektu: TrueHome
     \vspace{1mm}
 }
 \cfoot{Wrocław, 2019}
@@ -49,7 +49,7 @@
     \huge{WYDZIAŁ ELEKTRONIKI - INFORMATYKA \\ Systemy i Sieci Komputerowe}
 \vspace{2cm}
 
-    \LARGE{\textbf{Tytuł projektu: Apapp}}
+    \LARGE{\textbf{Tytuł projektu: TrueHome}}
 \vspace{3cm}
 
     \begin{flushright}
@@ -70,12 +70,12 @@
     
     \subsection{Minimal Viable Product}
         \begin{enumerate}
-            \item \textbf{Moderator}
-            \begin{itemize}
-                \item ma możliwość usuwania ofert
-                \item ma możliwość usuwania użytkowników
-                \item dostaje powiadomienia o naruszeniach regulaminu aplikacji
-            \end{itemize}
+            % \item \textbf{Moderator}
+            % \begin{itemize}
+            %     \item ma możliwość usuwania ofert
+            %     \item ma możliwość usuwania użytkowników
+            %     \item dostaje powiadomienia o naruszeniach regulaminu aplikacji
+            % \end{itemize}
             
             \item \textbf{Zwykły użytkownik}
             \begin{itemize}
@@ -136,7 +136,7 @@
     	
     	Komponenty widoku nie będące częścią podstawowych bibliotek pochodzą z rodziny AndroidX będącą następcą Android Support Libs.
     	
-    	Dodatkowo w aplikacji w konfiguracji Debug wykorzystywany jest framework LeakCanary umożliwiający śledzenie i rozwiązywanie wycieków pamięci JVM. 
+    	Dodatkowo w aplikacji w konfiguracji Debug wykorzystywany jest framework LeakCanary umożliwiający śledzenie i rozwiązywanie wycieków pamięci JVM.     
 
 \section{Harmonogram prac projektowych – wykres Gantta}
     \begin{figure}[H]
@@ -146,6 +146,10 @@
     \end{figure}
     
 \section{Architektura aplikacji}
+    Serwer służy wyłącznie jako REST API, użytkownicy korzystają jedynie z aplikacji mobilnej na systemy Android.
+    Najczęstszym przypadkiem użycia jest przeglądanie dostępnych mieszkań, jest to również jedna z niewielu możliwości niezalogowanego użytkownika.
+    Funkcje wymagające zalogowania to m.in. dodawanie apartamentu, dodawanie oceny, wyświetlenie numeru kontaktowego do właściciela mieszkania.
+    
     \begin{figure}[H]
         \centering
         \includegraphics[width=\textwidth]{figures/UseCase.jpg}
@@ -156,44 +160,56 @@
         Utworzone zostały trzy kontenery:
         \begin{itemize}
             \item \textbf{ResourceServer} - główny serwer obsługujący zapytania REST.\\
-            
+                Utworzonych zostało 5 kontrolerów do obsługi zapytań:
+                \begin{itemize}
+                    \item Aaprtment
+                    \item Auth
+                    \item Pictures
+                    \item Ratings
+                    \item User
+                \end{itemize}
+                Większość endpointów wymaga zalogowanego użytkownika - jedyne ogólnodostępne służą do pobierania listy apartamentów, listy ocen oraz zdjęć.
+                Pełna dokumentacja OpenAPI dostępna jest pod następującym adresem: 167.99.60.13:50649/swagger.
+                
             \item \textbf{AuthServer} - serwer pomocniczy służący do uwierzytelniania i autoryzacji użytkowników.\\
-            
+                Serwer posiada jeden główny kontroler, obsługujący rejestrację, login oraz refresh tokena.
+                
             \item \textbf{PostgresDB} - kontener zawierający bazę danych.\\
-        
+                Utworzone zostały dwie bazy danych - AuthServerDB (Identity + OpenIddict) oraz TrueHomeDB.
         \end{itemize}
         
+        \subsubsection{Przykładowe diagramy sekwencji}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=\textwidth]{figures/addPictureSeq.jpg}
+                \caption{Diagram sekwencji dodawania zdjęcia}
+            \end{figure}
+            
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=\textwidth]{figures/addApartmentSeq.jpg}
+                \caption{Diagram sekwencji dodawania apartamentu}
+            \end{figure}
+            
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=\textwidth]{figures/getPhoneSeq.jpg}
+                \caption{Diagram sekwencji pobierania numeru telefonu właściciela}
+            \end{figure}
         
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\textwidth]{figures/AuthERD.jpg}
-            \caption{Diagram ERD bazy autoryzacji}
-        \end{figure}
+        \subsubsection{Diagramy ERD baz danych}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=\textwidth]{figures/AuthERD.jpg}
+                \caption{Diagram ERD bazy autoryzacji}
+            \end{figure}
         
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\textwidth]{figures/TrueHomeERD.jpg}
-            \caption{Diagram ERD głównej bazy aplikacji}
-        \end{figure}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=\textwidth]{figures/TrueHomeERD.jpg}
+                \caption{Diagram ERD głównej bazy aplikacji}
+            \end{figure}
         
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\textwidth]{figures/addPictureSeq.jpg}
-            \caption{Diagram sekwencji dodawania zdjęcia}
-        \end{figure}
-        
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\textwidth]{figures/addApartmentSeq.jpg}
-            \caption{Diagram sekwencji dodawania apartamentu}
-        \end{figure}
-        
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\textwidth]{figures/getPhoneSeq.jpg}
-            \caption{Diagram sekwencji pobierania numeru telefonu właściciela}
-        \end{figure}
-    
     \subsection{Android}
     
     Pierwszą warstwą aplikacji mobilnej jest komunikacja sieciowa z REST API. Zapytania sieciowe wykonywane są asynchronicznie z warstwy repozytoriów danych. Repozytoria wykorzystywane są do lokalnego cachowania oraz umożliwiają dostęp do tych samych danych z kilku różnych miejsc kolejnej warstwy abstrakcji. W zależności od potrzeb przy pomocy Dependency Injection repozytorium może być traktowane jako jedno lub wielo-instancyjne. Interfejs publiczny repozytoriów został zbudowany bazując na paradygmacie programowania reaktywnego, implementacja udostępnia obserwowalny, dyskretny potok danych zaimplementowany przy pomocy wzorca projektowego Behaviour Subject (wielu obserwatorów, jeden strumień, dostęp do wartości wyemitowanych w czasie t+1 po subskrypcji obserwatora). Z repozytoriów korzysta bezpośrednio warstwa ViewModelów. ViewModele odpowiadają za definiowanie zachowania widoków aplikacji oraz zapewniają dostęp do danych otrzymywanych z repozytoriów.
@@ -203,9 +219,9 @@
     	\centering
     	\includegraphics[width=\textwidth]{figures/androidArch.png}
     	\caption{Uproszczony schemat ideowy architektury aplikacji Androidowej}
-    \end{figure}     
+    \end{figure}   
         
-\section{Opis struktury kodowania aplikacji} %mateusz
+\section{Opis struktury kodowania aplikacji}
     \subsection{handleNewLoginRequestStatus(status)}
         \begin{lstlisting}
         when (status) 
@@ -230,6 +246,7 @@
                 login_progress. <- GONE
          \end{lstlisting}
          Funkcja definiuje działania, które następują po próbie logowania. Ustawia widoczność przycisków w zależności od statusu. Jeśli logowanie nie powiedzie się to wyświetlony zostaje odpowiedni komunikat. Jeśli zaś wszystko pójdzie dobrze to funkcja przenosi użytkownika do kolejnego widoku (zawierającego listę dostepnych apartamentów).
+         
     \subsection{addApartment(name, city, street, apartmentNumber, price, maxPeople, area, phoneNumber, lat, long)}
         \begin{lstlisting}
             rxDisposables.add(bearerAuthWrapper.wrapCall(
@@ -241,6 +258,7 @@
                     { e -> Log(e, "ERROR adding Apartment") })
         \end{lstlisting}
         Funkcja wykorzystuje bibliotekę ,,Reactivex'' do asynchronicznego wysyłania strumieni danych dla nowo dodanej oferty mieszkania. Odbywa się to na osobnym wątku. Jeśli wystąpi błąd to stosowna informacja pojawi się w logach.
+        
     \subsection{validatePassword(password, isPassword)}
          \begin{lstlisting}
         upperCasePattern <- [A-Z]
@@ -280,6 +298,7 @@
                 && isLoginCorrect && isNameNotEmpty && isSurnameNotEmpty)
          \end{lstlisting}
          Funkcja sprawdza kolejno czy podane przez użytkownika hasło spełnia wymogi. Konkretnie sprawdzane jest czy hasło zawiera co najmniej po jednej dużej literze i cyfrze, a oprócz tego sprawdza czy długość wynosi co najmniej 8. Jeśli wszystkie warunki są spełnione to w zmiennej \texttt{registerPossibility} zapisana jest możliwość zarejestrowania się w aplikacji, która zostanie wykorzystana w innej funkcji.  
+    
     \subsection{onNewAuthStatus(status)}
         \begin{lstlisting}
             when(status)
@@ -296,6 +315,98 @@
         \end{lstlisting}
         Funkcja po otrzymaniu odpowiedzi w procesie uwierzytelnienia decyduje, co dalej robić. W razie niepowodzenia wyświetla odpowiednie komunikaty. Dzięki niej jest możliwe wylogowanie się z aplikacji.
 
+
+    \subsection{postgreSQL - get\_apartment(idAp)}
+    
+    \begin{lstlisting}[language=SQL]
+CREATE OR REPLACE FUNCTION get_apartment(id integer) 
+ RETURNS apartment_avg
+AS $$
+DECLARE
+	result_record apartment_avg;
+BEGIN
+ SELECT 
+	ID_Ap,
+	Name,
+	City,
+	Street,
+	ApartmentNumber,
+	ImgThumb,
+	ImgList,
+	Price,
+	MaxPeople,
+	Area,
+	OwnerRatingSum/NULLIF(RatingsCount,0)::double precision AS OwnerRating,
+	LocationRatingSum/NULLIF(RatingsCount,0)::double precision AS LocationRating,
+	StandardRatingSum/NULLIF(RatingsCount,0)::double precision AS StandardRating,
+	PriceRatingSum/NULLIF(RatingsCount,0)::double precision AS PriceRating,
+	Lat,
+	Long,
+	Description,
+	IDUser
+ INTO result_record
+ FROM apartment ap
+ WHERE ID_Ap=id;
+ 
+ RETURN result_record;
+END; $$ 
+LANGUAGE 'plpgsql';
+    \end{lstlisting}
+    Funkcja zwraca apartament przeliczając oceny na średnie arytmetyczne.
+    W bazie przechowywane są sumy ocen każdej kategorii, które aktualizowane są po wprowadzeniu zmian w bazie ocen.
+    
+    \subsection{postgreSQL - TRIGGER update\_ratings()}
+    
+    \begin{lstlisting}[language=SQL]
+CREACREATE OR REPLACE FUNCTION update_ratings()
+	RETURNS TRIGGER AS $add_ratings$
+DECLARE
+   OwnerDiff	INTEGER := 0;
+   LocationDiff	INTEGER := 0;
+   StandardDiff	INTEGER := 0;
+   PriceDiff	INTEGER := 0;
+   CountDiff	INTEGER := 0;
+BEGIN
+	CASE TG_OP
+		WHEN 'INSERT' THEN
+			OwnerDiff = NEW.Owner;
+			LocationDiff = NEW.Location;
+			StandardDiff = NEW.Standard;
+			PriceDiff = NEW.Price;
+			CountDiff = 1;
+		WHEN 'UPDATE' THEN
+			OwnerDiff = NEW.Owner - OLD.Owner;
+			LocationDiff = NEW.Location - OLD.Location;
+			StandardDiff = NEW.Standard - OLD.Standard;
+			PriceDiff = NEW.Price - OLD.Price;
+		WHEN 'DELETE' THEN
+			OwnerDiff = - OLD.Owner;
+			LocationDiff = - OLD.Location;
+			StandardDiff = - OLD.Standard;
+			PriceDiff = - OLD.Price;
+			CountDiff = -1;
+	END CASE;
+	
+   UPDATE apartment
+		SET
+			OwnerRatingSum = OwnerRatingSum + OwnerDiff,
+			LocationRatingSum = LocationRatingSum + LocationDiff,
+			StandardRatingSum = StandardRatingSum + StandardDiff,
+			PriceRatingSum = PriceRatingSum + PriceDiff,
+			RatingsCount = RatingsCount + CountDiff
+		WHERE
+			ID_Ap = NEW.IDAp;
+   RETURN NEW;
+END
+$add_ratings$ LANGUAGE plpgsql;
+			
+CREATE TRIGGER rating_update
+    AFTER INSERT OR UPDATE OR DELETE ON rating
+    FOR EACH ROW EXECUTE PROCEDURE update_ratings();
+    \end{lstlisting}
+    Trigger wyzwalany jest po każdej zmianie w tablicy 'rating'.
+    W zależności od typu operacji wartości ocen oraz ich liczba są dodawane lub odejmowane.
+    
 \section{Prezentacja aplikacji}
 
     \subsection{Logowanie}
@@ -371,6 +482,7 @@
         \end{figure}
         
         W tym miejscu można przejrzeć szczegóły oferty. Wszystkie istotne dane są dostępne na tej karcie łącznie ze średnią oceną mieszkania. Istnieje możliwość przesuwania zdjęć, aby załadować następne. Po jego naciśnięciu zostanie ono powiększone. Jedną z ciekawszych możliwości jest wyświetlenie lokalizacji apartamentu na Google Maps, co bardzo ułatwia znalezienie mieszkania i ocenę okolicy. Po wciśnięciu słuchawki użytkownik przeniesiony zostanie do systemowej aplikacji służącej do dzwonienia z wprowadzonym numerem telefonu ogłoszeniodawcy.
+        
 \section{Analiza SWOT powdrożeniowa}
     \subsection{Wewnętrzne}
         \subsubsection{Mocne strony}
